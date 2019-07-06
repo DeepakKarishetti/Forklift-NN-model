@@ -25,33 +25,34 @@ with open('ster_data.pkl', 'rb') as h:
 #print(len(pwm_data), len(vel_data), len(ster_data))
 
 # Create a model
-
+# building layers
 layer_0 = tf.keras.layers.Dense(units=1, input_shape=[1])
 layer_1 = tf.keras.layers.Dense(units=1, input_shape=[1])
 #layer_2 = tf.keras.layers.Dense(units=1, input_shape=[1])
 
 # Assemble layers into model
-
 model = tf.keras.Sequential([layer_0, layer_1])
 
 # compile the model
 model.compile(loss='mean_squared_error', optimizer = tf.keras.optimizers.Adam(0.1))
 
 # Train model
-
 train = model.fit(pwm_data, vel_data, epochs=750, verbose=False)
 
 # save the model
-
 model.save('f_nn_model.h5')
 
+# plotting the loss function
 plt.xlabel('Epoch number')
 plt.ylabel('Loss')
 plt.plot(train.history['loss'])
 plt.show()
 
+# de-normalization 
 vel_scale = ((2.48043818466 + -0.0720526864893) - -0.0720526864893) / 255
 vel_scalo = 1/255
+
+# model prediction
 r = model.predict([255])
 prediction = r*vel_scale 
 print(prediction)
